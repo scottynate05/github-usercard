@@ -3,6 +3,11 @@
            https://api.github.com/users/<your name>
 */
 
+// axios.get('https://api.github.com/users/scottynate05')
+//   .then(response => {
+//     console.log(response)
+//   })
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -24,7 +29,13 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  "tetondan",
+  "dustinmyers",
+  "justsml",
+  "luishrd",
+  "bigknell"
+];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -43,8 +54,72 @@ const followersArray = [];
     <p>Bio: {users bio}</p>
   </div>
 </div>
-
 */
+const gitCard = (user) => {
+  // elements
+  const userCard = document.createElement('card')
+  const userImg = document.createElement('img')
+  const userInfo = document.createElement('card-info')
+  const name = document.createElement('name')
+  const userName = document.createElement('username')
+  const loc = document.createElement('p')
+  const prof = document.createElement('p')
+  const profLink = document.createElement('a')
+  const followers = document.createElement('p')
+  const following = document.createElement('p')
+  const bio = document.createElement('p')
+
+  // structure
+  userCard.appendChild(userImg)
+  userCard.appendChild(userInfo)  
+  userInfo.appendChild(name)
+  userInfo.appendChild(userName)
+  userInfo.appendChild(loc)
+  userInfo.appendChild(prof)
+  userInfo.appendChild(followers)
+  userInfo.appendChild(following)
+  userInfo.appendChild(bio)
+  prof.appendChild(profLink)
+
+  // style
+  userCard.classList.add('card')
+  userInfo.classList.add('card-info')
+  name.classList.add('name')
+  userName.classList.add('username')
+
+  // content
+  userImg.src = user.data.avatar_url
+  name.textContent = user.data.name
+  userName.textContent = user.data.login
+  loc.textContent = `Location: ${user.data.location}`
+  prof.textContent = `Profile: ${user.data.html_url}`
+  profLink.href = user.data.html_url
+  followers.textContent = `Followers: ${user.data.followers}`
+  following.textContent = `Following: ${user.data.following}`
+
+  return userCard
+}
+
+const entry = document.querySelector('.cards')
+
+axios.get('https://api.github.com/users/scottynate05')
+.then(res => {
+  console.log(res)
+  entry.appendChild(gitCard(res))
+})
+.catch(error => {
+  console.log('Hit a snag!', error)
+})
+
+followersArray.forEach(user => {
+  axios.get(`https://api.github.com/users/${user}`)
+  .then(resp => {
+    entry.appendChild(gitCard(resp))
+  })
+  .catch(error => {
+    console.log('Hit a snag!', error)
+  })
+})
 
 /* List of LS Instructors Github username's: 
   tetondan
